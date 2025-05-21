@@ -1,0 +1,45 @@
+/// VGA (640x480)
+package VgaTiming {
+    // resolution
+    const width : u32 = 640;
+    const height: u32 = 480;
+
+    // horizontal timing
+    const hsc: u32 = 800;
+    const hfp: u32 = 16;
+    const hpw: u32 = 96;
+    const hbp: u32 = 48;
+
+    // vertical timing
+    const vsc: u32 = 525;
+    const vfp: u32 = 10;
+    const vpw: u32 = 2;
+    const vbp: u32 = 33;
+
+    // Effective pixel area (derived constant)
+    const hdo: u32 = width;
+    const vdo: u32 = height;
+}
+
+/// XGA (1024x768)
+package XgaTiming {
+    // resolution
+    const width : u32 = 1024;
+    const height: u32 = 768;
+
+    // horizontal timing
+    const hsc: u32 = 1344;
+    const hfp: u32 = 24;
+    const hpw: u32 = 136;
+    const hbp: u32 = 160;
+
+    // vertical timing
+    const vsc: u32 = 806;
+    const vfp: u32 = 3;
+    const vpw: u32 = 6;
+    const vbp: u32 = 29;
+
+    // Effective pixel area (derived constant)
+    const hdo: u32 = width;
+    const vdo: u32 = height;
+}
