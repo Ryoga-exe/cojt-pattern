@@ -43,3 +43,44 @@ package XgaTiming {
     const hdo: u32 = width;
     const vdo: u32 = height;
 }
+
+pub module SyncgenTimingSel (
+    xga: input logic, /// 1 = XGA, 0 = VGA
+
+    hsc: output logic<11>,
+    hfp: output logic<6> ,
+    hpw: output logic<8> ,
+    hbp: output logic<8> ,
+    hdo: output logic<11>,
+    vsc: output logic<11>,
+    vfp: output logic<4> ,
+    vpw: output logic<3> ,
+    vbp: output logic<6> ,
+    vdo: output logic<11>,
+) {
+    always_comb {
+        if xga {
+            hsc = XgaTiming::hsc;
+            hfp = XgaTiming::hfp;
+            hpw = XgaTiming::hpw;
+            hbp = XgaTiming::hbp;
+            hdo = XgaTiming::hdo;
+            vsc = XgaTiming::vsc;
+            vfp = XgaTiming::vfp;
+            vpw = XgaTiming::vpw;
+            vbp = XgaTiming::vbp;
+            vdo = XgaTiming::vdo;
+        } else {
+            hsc = VgaTiming::hsc;
+            hfp = VgaTiming::hfp;
+            hpw = VgaTiming::hpw;
+            hbp = VgaTiming::hbp;
+            hdo = VgaTiming::hdo;
+            vsc = VgaTiming::vsc;
+            vfp = VgaTiming::vfp;
+            vpw = VgaTiming::vpw;
+            vbp = VgaTiming::vbp;
+            vdo = VgaTiming::vdo;
+        }
+    }
+}
