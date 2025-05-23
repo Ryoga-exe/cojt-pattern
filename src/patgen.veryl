@@ -80,42 +80,61 @@ pub module patgen (
     );
 
     // Pattern generator core
-    // let tile_w: logic<11> = hdo >> 3;
-    // let tile_h: logic<11> = vdo >> 2;
-    var ded: logic   ;
-    var rd : logic<8>;
-    var gd : logic<8>;
-    var bd : logic<8>;
+    let tile_w: logic<11> = hdo >> 3;
+    let tile_h: logic<11> = vdo >> 2;
 
-    always_ff {
-        if_reset {
-            ded = 0;
-            rd  = 0;
-            gd  = 0;
-            bd  = 0;
-        } else {
-            // 1-clk delay of DE
-            ded = DSP_preDE;
-
-            // compute RGB on the cycle **before** DE is asserted
-            if DSP_preDE {
-                // TODO: pattern
-                rd = 8'hFF;
-                gd = 8'h00;
-                bd = 8'h00;
-            } else {
-                // blanking period
-                rd = 0;
-                gd = 0;
-                bd = 0;
+    var row: u32;
+    var col: u32;
+    always_comb {
+        for i: u32 in 0..8 {
+            #[cond_type(unique0)]
+            if inside HCNT {i * tile_w..(i + 1) * tile_w} {
+                row = i;
+            }
+        }
+        for i: u32 in 0..4 {
+            #[cond_type(unique0)]
+            if inside VCNT {i * tile_h..(i + 1) * tile_h} {
+                col = i;
             }
         }
     }
+    let sel: logic<3> = (row - col) as 3;
 
-    assign DSP_DE = ded;
-    assign DSP_R  = rd;
-    assign DSP_G  = gd;
-    assign DSP_B  = bd;
+    always_ff {
+        if_reset {
+            DSP_DE = 0;
+            DSP_R  = 0;
+            DSP_G  = 0;
+            DSP_B  = 0;
+        } else {
+            // 1-clk delay of DE
+            DSP_DE = DSP_preDE;
+
+            // compute RGB on the cycle DE is asserted
+            if DSP_DE {
+                let pat: logic<24> = case sel {
+                    0      : Palette::Red,
+                    1      : Palette::Green,
+                    2      : Palette::Blue,
+                    3      : Palette::Magenta,
+                    4      : Palette::Yellow,
+                    5      : Palette::Cyan,
+                    6      : Palette::Black,
+                    default: Palette::White,
+                };
+                DSP_R = pat[23:16];
+                DSP_G = pat[15:8];
+                DSP_B = pat[7:0];
+
+            } else {
+                // blanking period
+                DSP_R = 0;
+                DSP_G = 0;
+                DSP_B = 0;
+            }
+        }
+    }
 }
 
 #[test(tb_patgen)]
