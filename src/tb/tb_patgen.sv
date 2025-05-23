@@ -7,7 +7,7 @@ module tb_patgen;
   logic DCLK;
   logic RST;
   logic BTNR_TGL;  //resolution signal xga=1, vga=0
-  logic XGA;  //resolution signal synchronized to VSYNC_X 
+  logic XGA;  //resolution signal synchronized to VSYNC_X
   logic DSP_HSYNC_X;
   logic DSP_VSYNC_X;
   logic DSP_DE;
@@ -19,11 +19,11 @@ module tb_patgen;
   //    Parameter Definition
   //-----------------------------------------------------------------------------
 
-  localparam STEP25M = 40.0;
-  localparam STEP65M = 15.4;
+  localparam real STEP25M = 40.0;
+  localparam real STEP65M = 15.4;
 
-  localparam filename1 = "vga_imagedata.txt";
-  localparam filename2 = "xga_imagedata.txt";
+  localparam string FILENAME1 = "vga_imagedata.txt";
+  localparam string FILENAME2 = "xga_imagedata.txt";
   integer fd1, vflag1;
   integer fd2, vflag2;
   integer CLOCKNUM;
@@ -63,8 +63,8 @@ module tb_patgen;
   end
 
   initial begin
-    fd1 = $fopen(filename1);
-    fd2 = $fopen(filename2);
+    fd1 = $fopen(FILENAME1);
+    fd2 = $fopen(FILENAME2);
     vflag1 = 0;
     vflag2 = 0;
     RST = 0;
