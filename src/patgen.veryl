@@ -4,13 +4,13 @@ pub module patgen (
     RST     : input reset,
     BTNR_TGL: input logic, /// resolution signal (xga=1, vga=0)
 
-    XGA        : output logic   , /// resolution signal (synchronized to VCNT & HCNT)
-    DSP_HSYNC_X: output logic   , /// horizontal sync (active-low)
-    DSP_VSYNC_X: output logic   , /// vertical sync (active-low)
-    DSP_DE     : output logic   , /// display-enable
-    DSP_R      : output logic<8>,
-    DSP_G      : output logic<8>,
-    DSP_B      : output logic<8>,
+    mode       : output Resolution::Mode   , /// resolution signal (synchronized to VCNT & HCNT)
+    DSP_HSYNC_X: output logic              , /// horizontal sync (active-low)
+    DSP_VSYNC_X: output logic              , /// vertical sync (active-low)
+    DSP_DE     : output logic              , /// display-enable
+    DSP_R      : output logic           <8>,
+    DSP_G      : output logic           <8>,
+    DSP_B      : output logic           <8>,
 ) {
     var hsc: logic<11>;
     var hfp: logic<6> ;
@@ -24,27 +24,27 @@ pub module patgen (
     var vdo: logic<11>;
 
     inst i_tming: SyncgenTimingSel (
-        xga: XGA,
-        hsc     ,
-        hfp     ,
-        hpw     ,
-        hbp     ,
-        hdo     ,
-        vsc     ,
-        vfp     ,
-        vpw     ,
-        vbp     ,
-        vdo     ,
+        mode  ,
+        hsc   ,
+        hfp   ,
+        hpw   ,
+        hbp   ,
+        hdo   ,
+        vsc   ,
+        vfp   ,
+        vpw   ,
+        vbp   ,
+        vdo   ,
     );
 
-    let DRST   : default reset = drst_ff[1]; // synchronized RST
-    let xga_req: logic         = xga_ff[1]; // de-bounced request inside clk domain
+    let DRST    : default reset    = drst_ff[1]; // synchronized RST
+    let mode_req: Resolution::Mode = mode_ff; // de-bounced request inside clk domain
 
-    var drst_ff  : logic<2> ; // synchronizing FF for DRST
-    var xga_ff   : logic<2> ; // synchronizing FF for resolution
-    var HCNT     : logic<11>; // horizontal counter from syncgen
-    var VCNT     : logic<11>; // horizontal counter from syncgen
-    var DSP_preDE: logic    ;
+    var drst_ff  : logic           <2> ; // synchronizing FF for DRST
+    var mode_ff  : Resolution::Mode    ; // synchronizing FF for resolution
+    var HCNT     : logic           <11>; // horizontal counter from syncgen
+    var VCNT     : logic           <11>; // horizontal counter from syncgen
+    var DSP_preDE: logic               ;
 
     // synchronizing FF for DRST
     always_ff {
@@ -53,16 +53,16 @@ pub module patgen (
 
     // synchronizing FF for resolution
     always_ff {
-        xga_ff = {xga_ff[0], BTNR_TGL};
+        mode_ff = {mode_ff[0], BTNR_TGL};
     }
 
     // sync xga to HCNT & VCNT
     always_ff {
         if_reset {
-            XGA = 0;
+            mode = Resolution::Mode::vga;
         } else {
             if (HCNT == hsc - 1) && (VCNT == vsc - 1) {
-                XGA = xga_req;
+                mode = mode_req;
             }
         }
     }
@@ -71,7 +71,7 @@ pub module patgen (
     inst i_syncgen: syncgen (
         DCLK         ,
         DRST         ,
-        XGA          ,
+        mode         ,
         DSP_HSYNC_X  ,
         DSP_VSYNC_X  ,
         DSP_preDE    ,

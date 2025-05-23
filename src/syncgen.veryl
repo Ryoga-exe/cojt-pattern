@@ -1,8 +1,8 @@
 /// Sync-generator (VGA 640x480 @60Hz / XGA 1024x768 @60Hz)
 pub module syncgen (
-    DCLK: input clock,
-    DRST: input reset,
-    XGA : input logic, /// 1: XGA, 0: VGA
+    DCLK: input clock           ,
+    DRST: input reset           ,
+    mode: input Resolution::Mode,
 
     DSP_HSYNC_X: output logic    , /// horizontal sync (active-low)
     DSP_VSYNC_X: output logic    , /// vertical sync (active-low)
@@ -22,17 +22,17 @@ pub module syncgen (
     var vdo: logic<11>;
 
     inst i_tming: SyncgenTimingSel (
-        xga: XGA,
-        hsc     ,
-        hfp     ,
-        hpw     ,
-        hbp     ,
-        hdo     ,
-        vsc     ,
-        vfp     ,
-        vpw     ,
-        vbp     ,
-        vdo     ,
+        mode  ,
+        hsc   ,
+        hfp   ,
+        hpw   ,
+        hbp   ,
+        hdo   ,
+        vsc   ,
+        vfp   ,
+        vpw   ,
+        vbp   ,
+        vdo   ,
     );
 
     // horizontal counter

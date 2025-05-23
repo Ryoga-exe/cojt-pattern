@@ -25,16 +25,16 @@ pub module BASYS3_PATTERN (
     seg  : output logic<7> ,
     led  : output logic<16>,
 ) {
-    var clk     : '_ default clock   ; // 100MHz
-    var dclk    : '_ clock           ; // 25MHz or 65MHz
-    var rst     : '_ default reset   ;
-    var exrst   :    reset           ; // extended reset
-    var exrst_ff:    logic        <8>; // shift register for exrst
-    var rtgl    :    logic           ; // resolution signal from BTNR
-    var RED     :    logic        <8>; // DSP_R
-    var GRN     :    logic        <8>; // DSP_G
-    var BLU     :    logic        <8>; // DSP_B
-    var XGA     :    logic           ;
+    var clk     : '_ default clock      ; // 100MHz
+    var dclk    : '_ clock              ; // 25MHz or 65MHz
+    var rst     : '_ default reset      ;
+    var exrst   :    reset              ; // extended reset
+    var exrst_ff:    logic           <8>; // shift register for exrst
+    var rtgl    :    logic              ; // resolution signal from BTNR
+    var RED     :    logic           <8>; // DSP_R
+    var GRN     :    logic           <8>; // DSP_G
+    var BLU     :    logic           <8>; // DSP_B
+    var mode    :    Resolution::Mode   ;
 
     assign an  = '1;
     assign dp  = '1;
@@ -56,10 +56,17 @@ pub module BASYS3_PATTERN (
     // MMCM_Block
     inst i_clk_gen: clk_gen (
         clk_in1 : CLKIN,
-        clk_sel : XGA  ,
+        clk_sel : mode ,
         clk_out1: clk  ,
         dclk    : dclk ,
     );
+
+    // inst i_clk_gen2: clk_gen2 (
+    //     clk_in1 : CLKIN,
+    //     clk_sel : XGA  ,
+    //     clk_out1: clk  ,
+    //     dclk    : dclk ,
+    // );
 
     // push switch
     inst i_btn: btn (
@@ -85,7 +92,7 @@ pub module BASYS3_PATTERN (
         DCLK       : dclk ,
         RST        : exrst,
         BTNR_TGL   : rtgl ,
-        XGA               ,
+        mode              ,
         DSP_HSYNC_X: HSYNC,
         DSP_VSYNC_X: VSYNC,
         DSP_DE     : _    ,

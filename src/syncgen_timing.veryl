@@ -44,6 +44,29 @@ package XgaTiming {
     const vdo: u32 = height;
 }
 
+// SVGA (800x600)
+package SvgaTiming {
+    // resolution
+    const width : u32 = 800;
+    const height: u32 = 600;
+
+    // horizontal timing
+    const hsc: u32 = 1056; /// Sync Cycle
+    const hfp: u32 = 40; /// Front Porch
+    const hpw: u32 = 128; /// Sync Pulse Width
+    const hbp: u32 = 88; /// Back Porch
+
+    // vertical timing
+    const vsc: u32 = 628; /// Vertical Sync Cycle
+    const vfp: u32 = 1; /// Vertical Front Porch
+    const vpw: u32 = 4; /// Vertical Sync Pulse Width
+    const vbp: u32 = 23; /// Horizontal Back Porch
+
+    // Effective pixel area (derived constant)
+    const hdo: u32 = width;
+    const vdo: u32 = height;
+}
+
 /// SXGA (1280x1024)
 package SxgaTiming {
     // resolution
@@ -67,8 +90,10 @@ package SxgaTiming {
     const vdo: u32 = height;
 }
 
+import Resolution::Mode;
+
 pub module SyncgenTimingSel (
-    xga: input logic, /// 1 = XGA, 0 = VGA
+    mode: input Mode,
 
     hsc: output logic<11>,
     hfp: output logic<6> ,
@@ -82,28 +107,56 @@ pub module SyncgenTimingSel (
     vdo: output logic<11>,
 ) {
     always_comb {
-        if xga {
-            hsc = XgaTiming::hsc;
-            hfp = XgaTiming::hfp;
-            hpw = XgaTiming::hpw;
-            hbp = XgaTiming::hbp;
-            hdo = XgaTiming::hdo;
-            vsc = XgaTiming::vsc;
-            vfp = XgaTiming::vfp;
-            vpw = XgaTiming::vpw;
-            vbp = XgaTiming::vbp;
-            vdo = XgaTiming::vdo;
-        } else {
-            hsc = VgaTiming::hsc;
-            hfp = VgaTiming::hfp;
-            hpw = VgaTiming::hpw;
-            hbp = VgaTiming::hbp;
-            hdo = VgaTiming::hdo;
-            vsc = VgaTiming::vsc;
-            vfp = VgaTiming::vfp;
-            vpw = VgaTiming::vpw;
-            vbp = VgaTiming::vbp;
-            vdo = VgaTiming::vdo;
+        case mode {
+            Mode::xga: {
+                           hsc = VgaTiming::hsc;
+                           hfp = VgaTiming::hfp;
+                           hpw = VgaTiming::hpw;
+                           hbp = VgaTiming::hbp;
+                           hdo = VgaTiming::hdo;
+                           vsc = VgaTiming::vsc;
+                           vfp = VgaTiming::vfp;
+                           vpw = VgaTiming::vpw;
+                           vbp = VgaTiming::vbp;
+                           vdo = VgaTiming::vdo;
+
+                       }
+            Mode::vga: {
+                           hsc = XgaTiming::hsc;
+                           hfp = XgaTiming::hfp;
+                           hpw = XgaTiming::hpw;
+                           hbp = XgaTiming::hbp;
+                           hdo = XgaTiming::hdo;
+                           vsc = XgaTiming::vsc;
+                           vfp = XgaTiming::vfp;
+                           vpw = XgaTiming::vpw;
+                           vbp = XgaTiming::vbp;
+                           vdo = XgaTiming::vdo;
+                       }
+            Mode::svga: {
+                            hsc = SvgaTiming::hsc;
+                            hfp = SvgaTiming::hfp;
+                            hpw = SvgaTiming::hpw;
+                            hbp = SvgaTiming::hbp;
+                            hdo = SvgaTiming::hdo;
+                            vsc = SvgaTiming::vsc;
+                            vfp = SvgaTiming::vfp;
+                            vpw = SvgaTiming::vpw;
+                            vbp = SvgaTiming::vbp;
+                            vdo = SvgaTiming::vdo;
+                        }
+            default: {
+                         hsc = SxgaTiming::hsc;
+                         hfp = SxgaTiming::hfp;
+                         hpw = SxgaTiming::hpw;
+                         hbp = SxgaTiming::hbp;
+                         hdo = SxgaTiming::hdo;
+                         vsc = SxgaTiming::vsc;
+                         vfp = SxgaTiming::vfp;
+                         vpw = SxgaTiming::vpw;
+                         vbp = SxgaTiming::vbp;
+                         vdo = SxgaTiming::vdo;
+                     }
         }
     }
 }
