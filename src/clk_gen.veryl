@@ -13,10 +13,10 @@
 /// BUFGMUX_CTRL switches dclk between clk25MHz and clk65MHz at run time
 /// according to clk_sel, allowing seamless resolution changes.
 pub module clk_gen (
-    clk_in1 : input  clock, /// system clock (100MHz)
-    clk_sel : input  logic, /// clock select (0: 25MHz, 1: 65MHz)
-    clk_out1: output logic, /// 100MHz fabric clock
-    dclk    : output logic, /// pixel clock (25MHz or 65MHz, selected by clk_sel)
+    clk_in1 : input  '_ clock, /// system clock (100MHz)
+    clk_sel : input     logic, /// clock select (0: 25MHz, 1: 65MHz)
+    clk_out1: output    logic, /// 100MHz fabric clock
+    dclk    : output '_ clock, /// pixel clock (25MHz or 65MHz, selected by clk_sel)
 ) {
     var clk25MHz: logic;
     var clk65MHz: logic;

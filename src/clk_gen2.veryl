@@ -17,7 +17,7 @@
 /// - A cascaded PLL (clk_core2) uses the 100MHz MMCM output to generate 40MHz and 108MHz clocks; its feedback path is closed through a BUFG to ensure jitter-free operation.
 /// - Two BUFGMUX_CTRL blocks pick one clock from each low/high-frequency pair; a third BUFGMUX_CTRL chooses between those pairs, yielding the final dclk.
 pub module clk_gen2 (
-    clk_in1 : input  logic   , /// 100MHz reference
+    clk_in1 : input  clock   , /// 100MHz reference
     clk_sel : input  logic<2>, /// Resolution selector
     clk_out1: output logic   , /// 100MHz system clock
     dclk    : output logic, /// 25/40/65/108 MHz pixel clock
