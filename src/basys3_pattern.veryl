@@ -30,7 +30,7 @@ pub module BASYS3_PATTERN (
     var rst     : '_ default reset      ;
     var exrst   :    reset              ; // extended reset
     var exrst_ff:    logic           <8>; // shift register for exrst
-    var rtgl    :    logic              ; // resolution signal from BTNR
+    var rone    :    logic              ;
     var RED     :    logic           <8>; // DSP_R
     var GRN     :    logic           <8>; // DSP_G
     var BLU     :    logic           <8>; // DSP_B
@@ -39,7 +39,8 @@ pub module BASYS3_PATTERN (
     assign an  = '1;
     assign dp  = '1;
     assign seg = '1;
-    assign led = {rtgl, 0 repeat 15};
+    // assign led = {rtgl, 0 repeat 15};
+    assign led = '0;
 
     always_ff {
         exrst_ff = {exrst_ff[6:0], rst};
@@ -54,19 +55,12 @@ pub module BASYS3_PATTERN (
     }
 
     // MMCM_Block
-    inst i_clk_gen: clk_gen (
+    inst i_clk_gen2: clk_gen2 (
         clk_in1 : CLKIN,
         clk_sel : mode ,
         clk_out1: clk  ,
         dclk    : dclk ,
     );
-
-    // inst i_clk_gen2: clk_gen2 (
-    //     clk_in1 : CLKIN,
-    //     clk_sel : XGA  ,
-    //     clk_out1: clk  ,
-    //     dclk    : dclk ,
-    // );
 
     // push switch
     inst i_btn: btn (
@@ -78,8 +72,8 @@ pub module BASYS3_PATTERN (
         btnc: btnC,
         uone: _   ,
         utgl: _   ,
-        rone: _   ,
-        rtgl      ,
+        rone      ,
+        rtgl: _   ,
         lone: _   ,
         ltgl: _   ,
         done: rst ,
@@ -91,7 +85,7 @@ pub module BASYS3_PATTERN (
     inst i_patgen: patgen (
         DCLK       : dclk ,
         RST        : exrst,
-        BTNR_TGL   : rtgl ,
+        BTNR_ONE   : rone ,
         mode              ,
         DSP_HSYNC_X: HSYNC,
         DSP_VSYNC_X: VSYNC,

@@ -2,7 +2,7 @@
 pub module patgen (
     DCLK    : input clock,
     RST     : input reset,
-    BTNR_TGL: input logic, /// resolution signal (xga=1, vga=0)
+    BTNR_ONE: input logic, /// resolution signal
 
     mode       : output Resolution::Mode   , /// resolution signal (synchronized to VCNT & HCNT)
     DSP_HSYNC_X: output logic              , /// horizontal sync (active-low)
@@ -53,7 +53,18 @@ pub module patgen (
 
     // synchronizing FF for resolution
     always_ff {
-        mode_ff = {mode_ff[0], BTNR_TGL};
+        if_reset {
+            mode_ff = Resolution::Mode::vga;
+        } else {
+            if BTNR_ONE {
+                mode_ff = case mode_ff {
+                    Resolution::Mode::vga : Resolution::Mode::xga,
+                    Resolution::Mode::xga : Resolution::Mode::svga,
+                    Resolution::Mode::svga: Resolution::Mode::sxga,
+                    default               : Resolution::Mode::vga,
+                };
+            }
+        }
     }
 
     // sync xga to HCNT & VCNT

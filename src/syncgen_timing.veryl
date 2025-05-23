@@ -108,7 +108,7 @@ pub module SyncgenTimingSel (
 ) {
     always_comb {
         case mode {
-            Mode::xga: {
+            Mode::vga: {
                            hsc = VgaTiming::hsc;
                            hfp = VgaTiming::hfp;
                            hpw = VgaTiming::hpw;
@@ -121,7 +121,7 @@ pub module SyncgenTimingSel (
                            vdo = VgaTiming::vdo;
 
                        }
-            Mode::vga: {
+            Mode::xga: {
                            hsc = XgaTiming::hsc;
                            hfp = XgaTiming::hfp;
                            hpw = XgaTiming::hpw;
