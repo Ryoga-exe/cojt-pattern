@@ -1,0 +1,68 @@
+import Resolution::Mode;
+
+pub module disp_sel (
+    mode: input Resolution::Mode,
+
+    disp0: output logic<7>,
+    disp1: output logic<7>,
+    disp2: output logic<7>,
+    disp3: output logic<7>,
+) {
+    var data: Char::Code [4];
+
+    always_comb {
+        case mode {
+            Mode::vga: {
+                           data[0] = Char::Code::a;
+                           data[1] = Char::Code::g;
+                           data[2] = Char::Code::v;
+                           data[3] = Char::Code::none;
+                       }
+            Mode::xga: {
+                           data[0] = Char::Code::a;
+                           data[1] = Char::Code::g;
+                           data[2] = Char::Code::x;
+                           data[3] = Char::Code::none;
+                       }
+            Mode::svga: {
+                            data[0] = Char::Code::a;
+                            data[1] = Char::Code::g;
+                            data[2] = Char::Code::v;
+                            data[3] = Char::Code::s;
+                        }
+            Mode::sxga: {
+                            data[0] = Char::Code::a;
+                            data[1] = Char::Code::g;
+                            data[2] = Char::Code::x;
+                            data[3] = Char::Code::s;
+                        }
+            default: {
+                         data[0] = Char::Code::none;
+                         data[1] = Char::Code::none;
+                         data[2] = Char::Code::none;
+                         data[3] = Char::Code::none;
+                     }
+        }
+    }
+
+    inst i_disp0: seg7 (
+        disp_data: data[0],
+        disp_en  : 1      ,
+        segment  : disp0  ,
+    );
+    inst i_disp1: seg7 (
+        disp_data: data[1],
+        disp_en  : 1      ,
+        segment  : disp1  ,
+    );
+    inst i_disp2: seg7 (
+        disp_data: data[2],
+        disp_en  : 1      ,
+        segment  : disp2  ,
+    );
+    inst i_disp3: seg7 (
+        disp_data: data[3],
+        disp_en  : 1      ,
+        segment  : disp3  ,
+    );
+}

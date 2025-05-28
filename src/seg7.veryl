@@ -1,0 +1,31 @@
+package Char {
+    enum Code: logic<3> {
+        a,
+        g,
+        s,
+        v,
+        x,
+        none,
+    }
+}
+
+pub module seg7 (
+    disp_data: input  Char::Code   ,
+    disp_en  : input  logic        ,
+    segment  : output logic     <7>,
+) {
+    always_comb {
+        if disp_en {
+            segment = case disp_data {
+                Char::Code::a: 7'b0001000,
+                Char::Code::g: 7'b1000010,
+                Char::Code::s: 7'b0010010,
+                Char::Code::v: 7'b1000001,
+                Char::Code::x: 7'b0001001,
+                default      : '1,
+            };
+        } else {
+            segment = '1;
+        }
+    }
+}

@@ -30,17 +30,20 @@ pub module BASYS3_PATTERN (
     var rst     : '_ default reset      ;
     var exrst   :    reset              ; // extended reset
     var exrst_ff:    logic           <8>; // shift register for exrst
-    var rone    :    logic              ;
+    var rtgl    :    logic              ;
+    var utgl    :    logic              ;
     var RED     :    logic           <8>; // DSP_R
     var GRN     :    logic           <8>; // DSP_G
     var BLU     :    logic           <8>; // DSP_B
     var mode    :    Resolution::Mode   ;
 
-    assign an  = '1;
+    var disp0: logic<7>;
+    var disp1: logic<7>;
+    var disp2: logic<7>;
+    var disp3: logic<7>;
+
     assign dp  = '1;
-    assign seg = '1;
-    // assign led = {rtgl, 0 repeat 15};
-    assign led = '0;
+    assign led = {mode as 2, 0 repeat 14};
 
     always_ff {
         exrst_ff = {exrst_ff[6:0], rst};
@@ -71,9 +74,9 @@ pub module BASYS3_PATTERN (
         btnd: btnD,
         btnc: btnC,
         uone: _   ,
-        utgl: _   ,
-        rone      ,
-        rtgl: _   ,
+        utgl      ,
+        rone: _   ,
+        rtgl      ,
         lone: _   ,
         ltgl: _   ,
         done: rst ,
@@ -82,10 +85,30 @@ pub module BASYS3_PATTERN (
         ctgl: _   ,
     );
 
+    inst i_an_ca: an_ca (
+        clk       ,
+        rst       ,
+        disp3     ,
+        disp2     ,
+        disp1     ,
+        disp0     ,
+        an        ,
+        ca   : seg,
+    );
+
+    inst i_disp_sel: disp_sel (
+        mode   ,
+        disp0  ,
+        disp1  ,
+        disp2  ,
+        disp3  ,
+    );
+
     inst i_patgen: patgen (
         DCLK       : dclk ,
         RST        : exrst,
-        BTNR_ONE   : rone ,
+        BTNR_TGL   : rtgl ,
+        BTNU_TGL   : utgl ,
         mode              ,
         DSP_HSYNC_X: HSYNC,
         DSP_VSYNC_X: VSYNC,
